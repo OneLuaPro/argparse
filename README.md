@@ -1,6 +1,6 @@
 # argparse
 
-[![Build Status](https://travis-ci.org/luarocks/argparse.png?branch=master)](https://travis-ci.org/luarocks/argparse)
+[![CI](https://github.com/luarocks/argparse/actions/workflows/ci.yml/badge.svg)](./.github/workflows/ci.yml)
 [![Coverage status](https://codecov.io/gh/luarocks/argparse/branch/master/graph/badge.svg)](https://codecov.io/gh/luarocks/argparse)
 
 Argparse is a feature-rich command line parser for Lua inspired by argparse for Python.
@@ -104,7 +104,7 @@ Did you mean '--output'?
 
 ### Using LuaRocks
 
-Installing argparse using [LuaRocks](http://luarocks.org) is simple:
+Installing argparse using [LuaRocks](https://luarocks.org) is simple:
 
 ```bash
 $ luarocks install argparse
@@ -122,7 +122,7 @@ Tutorial HTML files can be built using [Sphinx](http://sphinx-doc.org/): `sphinx
 
 ## Testing
 
-argparse comes with a testing suite located in `spec` directory. [busted](http://olivinelabs.com/busted/) is required for testing, it can be installed using LuaRocks. Run the tests using `busted` command from the argparse folder.
+argparse comes with a testing suite located in `spec` directory. [busted](https://github.com/lunarmodules/busted) is required for testing, it can be installed using LuaRocks. Run the tests using `busted` command from the argparse folder.
 
 ## License
 
