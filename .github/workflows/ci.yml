@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: '*'
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        luaVersion: ["5.1", "5.2", "5.3", "5.4", "5.5", "luajit", "luajit-openresty"]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+
+    steps:
+    - uses: actions/checkout@master
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      if: ${{ runner.os == 'Windows' && !startsWith(matrix.luaVersion, 'luajit') }}
+
+    - uses: luarocks/gh-actions-lua@master
+      with:
+        luaVersion: ${{ matrix.luaVersion }}
+
+    - uses: luarocks/gh-actions-luarocks@master
+
+    - name: Lint development rockspec
+      run: luarocks lint "argparse-scm-2.rockspec"
+
+    - name: Install busted
+      run: luarocks install busted
+
+    - name: Install cluacov
+      run: luarocks install cluacov
+
+    - name: Install luacheck
+      run: luarocks install luacheck
+
+    - name: Run luacheck
+      run: luacheck src spec
+
+    - name: Run tests
+      run: busted -c
+
+    - name: Run code coverage
+      run: luacov
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}

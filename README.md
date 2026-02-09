@@ -135,7 +135,7 @@ Already up to date.
 Everything up-to-date
 John Doe@DESKTOP-1HK25HF MINGW64 /c/misc/argparse (master)
 
-```
+argparse comes with a testing suite located in `spec` directory. [busted](https://github.com/lunarmodules/busted) is required for testing, it can be installed using LuaRocks. Run the tests using `busted` command from the argparse folder.
 
 ## License
 
