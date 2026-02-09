@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023 Kritzel Kratzel.
+# Copyright (c) 2023-2026 The OneLuaPro project authors.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in 
@@ -74,13 +74,13 @@ endif()
 
 # ------------------------------------------------------------------------------
 # Project defintion
-project(argparse)
+project(argparse C)
 
 # ------------------------------------------------------------------------------
 # Other settings
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 # argparse has nothing to build, only some files to install
-set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+# set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 # ------------------------------------------------------------------------------
 # Setup GNU-alike installatin directories
@@ -94,6 +94,45 @@ set(INSTALL_TOP_LDIR
   ${INSTALL_DATAROOTDIR}/lua/${liblua_VERSION_MAJOR}.${liblua_VERSION_MINOR})
 
 # ------------------------------------------------------------------------------
-# Install lua-file and docs
+# Documentation Generation (Pandoc)
+find_program(PANDOC_EXECUTABLE pandoc DOC "Path to pandoc executable")
+if(PANDOC_EXECUTABLE)
+  # Collect all RST files from docsrc directory
+  # Note: This will sort them alphabetically!
+  file(GLOB ARGPARSE_RST_SOURCES 
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/docsrc" 
+    "${CMAKE_CURRENT_SOURCE_DIR}/docsrc/*.rst")
+
+  # Ensure index.rst is ALWAYS first:
+  list(REMOVE_ITEM ARGPARSE_RST_SOURCES "index.rst")
+  set(ARGPARSE_RST_SOURCES "index.rst" ${ARGPARSE_RST_SOURCES})
+
+  # Define build and output paths
+  set(DOC_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc")
+  set(DOC_HTML_OUTPUT "${DOC_BUILD_DIR}/index.html")
+  # Add command to merge and convert RST files to HTML
+  add_custom_command(
+    OUTPUT "${DOC_HTML_OUTPUT}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${DOC_BUILD_DIR}"
+    COMMAND ${PANDOC_EXECUTABLE} ${ARGPARSE_RST_SOURCES}
+    -f rst -t html5 -s
+    --toc --toc-depth=2
+    --embed-resources
+    --css=assets/oneluapro.css
+    --metadata title=argparse
+    -o "${DOC_HTML_OUTPUT}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/docsrc"
+    COMMENT "Merging and converting argparse RST documents to HTML"
+    VERBATIM
+  )
+  # Create a target that is built by default
+  add_custom_target(argparse_doc ALL DEPENDS "${DOC_HTML_OUTPUT}")
+  # Install the generated HTML documentation
+  install(FILES "${DOC_HTML_OUTPUT}" DESTINATION "${INSTALL_DOCDIR}/argparse")
+else()
+  message(FATAL_ERROR "Pandoc not found. Documentation will not be generated.")
+endif()
+
+# ------------------------------------------------------------------------------
+# Install lua-file
 install(FILES src/argparse.lua DESTINATION ${INSTALL_TOP_LDIR})
-install(DIRECTORY docsrc/ DESTINATION ${INSTALL_DOCDIR}) # "/" omits leading dir
