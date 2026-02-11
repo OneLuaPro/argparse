@@ -128,7 +128,7 @@ if(PANDOC_EXECUTABLE)
   # Create a target that is built by default
   add_custom_target(argparse_doc ALL DEPENDS "${DOC_HTML_OUTPUT}")
   # Install the generated HTML documentation
-  install(FILES "${DOC_HTML_OUTPUT}" DESTINATION "${INSTALL_DOCDIR}/argparse")
+  install(FILES "${DOC_HTML_OUTPUT}" DESTINATION "${INSTALL_DOCDIR}")
 else()
   message(FATAL_ERROR "Pandoc not found. Documentation will not be generated.")
 endif()
