@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.2 (2026-04-23)
+
+* Rockspec now allows Lua up to 5.5.
+* Replaced Travis CI with GitHub Actions for continuous integration.
+
 ## 0.7.1 (2020-07-08)
 
 Tested with Lua 5.4
